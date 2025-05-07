@@ -24,10 +24,11 @@ class CalculatorApp:
 
         # Кнопки
         buttons = [
-            ('7', 1, 0, "#424242"), ('8', 1, 1, "#424242"), ('9', 1, 2, "#424242"), ('/', 1, 3, "#F44336"),
-            ('4', 2, 0, "#424242"), ('5', 2, 1, "#424242"), ('6', 2, 2, "#424242"), ('*', 2, 3, "#F44336"),
-            ('1', 3, 0, "#424242"), ('2', 3, 1, "#424242"), ('3', 3, 2, "#424242"), ('-', 3, 3, "#F44336"),
-            ('0', 4, 0, "#424242"), ('.', 4, 1, "#424242"), ('+', 4, 2, "#F44336"), ('=', 4, 3, "#4CAF50")
+            ('C', 1, 0, "#FF5722"), ('7', 1, 1, "#424242"), ('8', 1, 2, "#424242"), ('9', 1, 3, "#424242"),
+            ('/', 2, 0, "#F44336"), ('4', 2, 1, "#424242"), ('5', 2, 2, "#424242"), ('6', 2, 3, "#424242"),
+            ('*', 3, 0, "#F44336"), ('1', 3, 1, "#424242"), ('2', 3, 2, "#424242"), ('3', 3, 3, "#424242"),
+            ('-', 4, 0, "#F44336"), ('0', 4, 1, "#424242"), ('.', 4, 2, "#424242"), ('+', 4, 3, "#F44336"),
+            ('=', 5, 0, "#4CAF50")
         ]
 
         # Размещение кнопок
@@ -41,13 +42,18 @@ class CalculatorApp:
             style.configure(f"{text}.TButton", background=bg)
 
         # Адаптивность
-        for i in range(5):
+        for i in range(6):
             self.root.grid_rowconfigure(i, weight=1)
         for i in range(4):
             self.root.grid_columnconfigure(i, weight=1)
 
+        # Привязка клавиатуры
+        self.root.bind("<Key>", self.key_press)
+
     def button_click(self, char):
-        if char == '=':
+        if char == 'C':
+            self.expression = ""
+        elif char == '=':
             try:
                 self.expression = str(eval(self.expression))
             except:
@@ -55,6 +61,12 @@ class CalculatorApp:
         else:
             self.expression += char
         self.result_var.set(self.expression)
+
+    def key_press(self, event):
+        if event.char in '0123456789+-*/.':
+            self.button_click(event.char)
+        elif event.keysym == 'Return':
+            self.button_click('=')
 
 if __name__ == "__main__":
     root = tk.Tk()
